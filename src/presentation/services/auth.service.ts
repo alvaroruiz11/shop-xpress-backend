@@ -1,7 +1,8 @@
 import { PrismaClient } from '@prisma/client';
+
 import { RegisterUserDto } from '../auth/dto/register-user.dto';
-import { BcryptAdapter, CustomError } from '../../config';
 import { LoginUserDto } from '../auth/dto/login-user.dto';
+import { BcryptAdapter, CustomError, JwtAdapter } from '../../config';
 
 export class AuthService {
   private readonly prisma = new PrismaClient();
@@ -29,12 +30,16 @@ export class AuthService {
         },
       });
 
+      const token = await JwtAdapter.generateToken({ id: user.id });
+      if( !token ) {
+        throw CustomError.badRequest('Error while creating token');
+      }
+
       const { password: _, ...rest } = user;
 
       return {
         user: rest,
-        // todo: generateToken
-        token: 'ABC123'
+        token: token
       };
     } catch (error) {
       throw CustomError.internalServer(`${error}`);
@@ -56,12 +61,16 @@ export class AuthService {
         throw CustomError.badRequest('Password is not valid');
       }
 
+      const token = await JwtAdapter.generateToken({ id: user.id });
+      if( !token ) {
+        throw CustomError.badRequest('Error while creating token');
+      }
+
       const {password:_, ...rest } = user;
 
       return {
         user: rest,
-        // todo: generateToken
-        token: 'ABC123'
+        token: token
       }
 
     } catch (error) {
