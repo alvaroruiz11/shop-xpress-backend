@@ -2,7 +2,8 @@ import { PrismaClient } from '@prisma/client';
 
 import { RegisterUserDto } from '../auth/dto/register-user.dto';
 import { LoginUserDto } from '../auth/dto/login-user.dto';
-import { BcryptAdapter, CustomError, JwtAdapter } from '../../config';
+import { BcryptAdapter, JwtAdapter } from '../../config';
+import { CustomError } from '../common';
 
 export class AuthService {
   private readonly prisma = new PrismaClient();

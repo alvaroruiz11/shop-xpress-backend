@@ -3,7 +3,8 @@ import { Request, Response } from 'express';
 import { RegisterUserDto } from './dto/register-user.dto';
 import { LoginUserDto } from './dto/login-user.dto';
 import { AuthService } from '../services';
-import { CustomError } from '../../config';
+import { CustomError } from '../common';
+
 
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
