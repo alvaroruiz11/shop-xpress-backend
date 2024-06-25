@@ -9,8 +9,8 @@ export class CategoriesRoutes {
     const categoriesService = new CategoriesService();
     const controller = new CategoriesController(categoriesService);
 
-    router.get('/', controller.findAllCategories);
-    router.post('/',[AuthMiddleware.validateJWT], controller.createCategory);
+    router.get('/', [AuthMiddleware.validateJWT], controller.findAllCategories);
+    router.post('/', [AuthMiddleware.validateJWT], controller.createCategory);
     router.patch('/:id', [AuthMiddleware.validateJWT], controller.updateCategory);
     router.delete('/:id', [AuthMiddleware.validateJWT], controller.deleteCategory);
 

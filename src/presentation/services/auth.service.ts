@@ -1,20 +1,20 @@
-import { PrismaClient } from '@prisma/client';
-
+import { PrismaClient, User } from '@prisma/client';
 import { RegisterUserDto } from '../auth/dto/register-user.dto';
 import { LoginUserDto } from '../auth/dto/login-user.dto';
 import { BcryptAdapter, JwtAdapter } from '../../config';
 import { CustomError } from '../common';
 
-export class AuthService {
-  private readonly prisma = new PrismaClient();
-
+export class AuthService extends PrismaClient{
+  
   // DI
-  constructor() {}
+  constructor() {
+    super();
+  }
 
   async registerUser(registerUserDto: RegisterUserDto) {
     const { email, firstName, lastName, password } = registerUserDto;
     try {
-      const exists = await this.prisma.user.findUnique({
+      const exists = await this.user.findUnique({
         where: { email },
       });
 
@@ -22,7 +22,7 @@ export class AuthService {
         throw CustomError.badRequest('Email already exist');
       }
 
-      const user = await this.prisma.user.create({
+      const user = await this.user.create({
         data: {
           email: email,
           firstName: firstName,
@@ -50,7 +50,7 @@ export class AuthService {
   async loginUser(loginUserDto: LoginUserDto) {
     const { email, password } = loginUserDto;
     try {
-      const user = await this.prisma.user.findUnique({ where: { email } });
+      const user = await this.user.findUnique({ where: { email } });
 
       if (!user) {
         throw CustomError.badRequest('Email not exists');
@@ -78,4 +78,17 @@ export class AuthService {
       throw CustomError.internalServer(`${error}`);
     }
   }
+
+  async checkAuthStatus ( user: User) {
+    try {
+      const token = await JwtAdapter.generateToken({ id: user.id });
+      return {
+        user,
+        token
+      } 
+    } catch (error) {
+      throw CustomError.internalServer(`${error}`);
+    }
+  }
+
 }

@@ -1,7 +1,7 @@
 import { PrismaClient } from '@prisma/client';
+import { PaginationDto, CustomError } from '../common';
 import { CreateCategoryDto } from '../categories/dto/create-category.dto';
 import { UpdateCategoryDto } from '../categories/dto/update-category.dto';
-import { PaginationDto, CustomError } from '../common';
 
 export class CategoriesService extends PrismaClient{
 

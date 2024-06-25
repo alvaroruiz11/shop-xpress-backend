@@ -4,6 +4,7 @@ import { RegisterUserDto } from './dto/register-user.dto';
 import { LoginUserDto } from './dto/login-user.dto';
 import { AuthService } from '../services';
 import { CustomError } from '../common';
+import { JwtAdapter } from '../../config';
 
 
 export class AuthController {
@@ -16,6 +17,13 @@ export class AuthController {
 
     console.log(`${ error }`);
     return res.status(500).json({error: 'Internal server error'});
+  }
+
+  checkStatus = (req: Request, res: Response) => { 
+    const user = req.body.user;
+    this.authService.checkAuthStatus(user)
+      .then((resp) => res.json(resp))
+      .catch((error) => this.handleError(error, res))
   }
 
   registerUser = (req: Request, res: Response) => {
